@@ -1,3 +1,13 @@
+# oh-my-zsh integration
+# check original .zshrc on
+# https://github.com/robbyrussell/oh-my-zsh/blob/master/templates/zshrc.zsh-template
+#
+
+export ZSH=$HOME/.oh-my-zsh
+ZSH_THEME="robbyrussell"
+source $ZSH/oh-my-zsh.sh
+
+
 # shortcut to this dotfiles path is $ZSH
 export ZSH=$HOME/.dotfiles
 
