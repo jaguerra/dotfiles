@@ -1,0 +1,21 @@
+#!/bin/sh
+find -E . -iregex ".*\.(txt|htm|html|css|scss|js|php)" | \
+  while read f; do
+    t=`mktemp "$f.utf8.XXXXX"`
+    if [ ! "$?" = 0 ]; then
+      echo "ERROR: cannot make temp file for $f"
+      continue
+    fi
+    echo recoding $f to $t
+    if cat "$f" | recode latin1/..utf8/ >"$t" ; then
+      if diff -wq "$f" "$t"; then
+        echo No change: $f
+        rm "$t"
+      else
+        mv "$f" "$f.latin1" && mv "$t" "$f" && echo OK $f
+      fi
+    else
+      echo "ERROR: $?"
+    fi
+  done \
+| tee -a convert-results.txt
