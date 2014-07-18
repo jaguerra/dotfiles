@@ -28,6 +28,10 @@ let g:syntastic_php_checkers=['php']
 "let g:syntastic_php_phpcs_args = "--standard=TYPO3CMS"
 let g:phpqa_codesniffer_args = "--standard=TYPO3CMS"
 
+" Don't run phpqa on write... TYPO3 files are really big and slow to process
+let g:phpqa_run_on_write = 0
+
+
 " php remove eol from end of file (TYPO3CMS phpcs req)
 autocmd FileType php setlocal noeol binary fileformats="mac,unix,dos"
 
