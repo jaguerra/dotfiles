@@ -5,6 +5,17 @@ function! s:setupNoWrapping()
   set nolist
 endfunction
 
+function! s:setupTYPO3()
+		" Indenting using tabs
+		" http://vim.wikia.com/wiki/Indent_with_tabs,_align_with_spaces
+		setlocal noexpandtab
+		setlocal copyindent
+		setlocal preserveindent
+		setlocal softtabstop=0
+		setlocal shiftwidth=4
+		setlocal tabstop=2
+endfunction
+
 
 au BufNewFile,BufRead mozex.textarea.* setlocal filetype=typoscript
 au BufNewFile,BufRead *.ts setlocal filetype=typoscript 
@@ -17,7 +28,7 @@ set noantialias
 map <F5> :python debugger_run()<cr>
 
 
-au BufNewFile,BufRead */Resources/Private/*.html setlocal filetype=xml
+au BufNewFile,BufRead */Resources/Private/*.html setlocal filetype=xml | call s:setupTYPO3()
 
 
 " NERDTree tarda una eternidad en dejar usar VIM tras recuperar el foco...
@@ -36,16 +47,11 @@ let g:phpqa_run_on_write = 0
 autocmd FileType php setlocal noeol binary fileformats="mac,unix,dos"
 
 set wrap
-
-" Indenting using tabs
-" http://vim.wikia.com/wiki/Indent_with_tabs,_align_with_spaces
-set noexpandtab
-set copyindent
-set preserveindent
-set softtabstop=0
-set shiftwidth=4
+set expandtab
 set tabstop=2
 
+autocmd FileType php call s:setupTYPO3()
+autocmd FileType typoscript call s:setupTYPO3()
 
 " Return indent (all whitespace at start of a line), converted from
 " tabs to spaces if what = 1, or from spaces to tabs otherwise.
