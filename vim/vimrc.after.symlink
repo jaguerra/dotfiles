@@ -1,11 +1,11 @@
-function! s:setupNoWrapping()
+function! SetupNoWrapping()
   set wrap
   set linebreak
   set textwidth=0
   set nolist
 endfunction
 
-function! s:setupTYPO3()
+function! SetupTYPO3()
 		" Indenting using tabs
 		" http://vim.wikia.com/wiki/Indent_with_tabs,_align_with_spaces
 		setlocal noexpandtab
@@ -19,8 +19,8 @@ endfunction
 
 au BufNewFile,BufRead mozex.textarea.* setlocal filetype=typoscript
 au BufNewFile,BufRead *.ts setlocal filetype=typoscript 
-au BufNewFile,BufRead *setup.txt setlocal filetype=typoscript.| call s:setupNoWrapping()
-au BufNewFile,BufRead *constants.txt setlocal filetype=typoscript.| call s:setupNoWrapping()
+au BufNewFile,BufRead *setup.txt setlocal filetype=typoscript.| call SetupNoWrapping()
+au BufNewFile,BufRead *constants.txt setlocal filetype=typoscript.| call SetupNoWrapping()
 color desert
 set guifont=Monaco:h13
 set noantialias
@@ -28,7 +28,7 @@ set noantialias
 map <F5> :python debugger_run()<cr>
 
 
-au BufNewFile,BufRead */Resources/Private/*.html setlocal filetype=xml | call s:setupTYPO3()
+au BufNewFile,BufRead */Resources/Private/*.html setlocal filetype=xml | call SetupTYPO3()
 
 
 " NERDTree tarda una eternidad en dejar usar VIM tras recuperar el foco...
@@ -36,7 +36,7 @@ let NERDTreeQuitOnOpen=1
 
 " Disable phpcs and phpmd from Syntastic
 let g:syntastic_php_checkers=['php']
-"let g:syntastic_php_phpcs_args = "--standard=TYPO3CMS"
+let g:syntastic_php_phpcs_args = "--standard=TYPO3CMS"
 let g:phpqa_codesniffer_args = "--standard=TYPO3CMS"
 
 " Don't run phpqa on write... TYPO3 files are really big and slow to process
@@ -50,8 +50,8 @@ set wrap
 set expandtab
 set tabstop=2
 
-autocmd FileType php call s:setupTYPO3()
-autocmd FileType typoscript call s:setupTYPO3()
+autocmd FileType php call SetupTYPO3()
+autocmd FileType typoscript call SetupTYPO3()
 
 " Return indent (all whitespace at start of a line), converted from
 " tabs to spaces if what = 1, or from spaces to tabs otherwise.
