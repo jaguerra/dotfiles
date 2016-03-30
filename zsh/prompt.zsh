@@ -9,6 +9,29 @@ else
   git="/usr/bin/git"
 fi
 
+if (( $+commands[hg] ))
+then
+  hg="$commands[hg]"
+else
+  hg="/usr/bin/local/hg"
+fi
+
+hg_branch() {
+  branch=$($hg branch 2>/dev/null)
+  if [[ $branch == "" ]]
+  then
+    echo ""
+  else
+    st=$($hg status 2>/dev/null | tail -n 1)
+    if [[ "$st" == "" ]]
+    then
+      echo "on hg %{$fg_bold[green]%}$branch%{$reset_color%}"
+    else
+      echo "on hg %{$fg_bold[red]%}$branch%{$reset_color%}"
+    fi
+  fi
+}
+
 git_branch() {
   echo $($git symbolic-ref HEAD 2>/dev/null | awk -F/ {'print $NF'})
 }
@@ -21,9 +44,9 @@ git_dirty() {
   else
     if [[ "$st" =~ ^nothing ]]
     then
-      echo "on %{$fg_bold[green]%}$(git_prompt_info)%{$reset_color%}"
+      echo "on git %{$fg_bold[green]%}$(git_prompt_info)%{$reset_color%}"
     else
-      echo "on %{$fg_bold[red]%}$(git_prompt_info)%{$reset_color%}"
+      echo "on git %{$fg_bold[red]%}$(git_prompt_info)%{$reset_color%}"
     fi
   fi
 }
@@ -41,9 +64,9 @@ unpushed () {
 need_push () {
   if [[ $(unpushed) == "" ]]
   then
-    echo " "
+    echo ""
   else
-    echo " with %{$fg_bold[magenta]%}unpushed%{$reset_color%} "
+    echo " with %{$fg_bold[magenta]%}unpushed%{$reset_color%}"
   fi
 }
 
@@ -85,7 +108,7 @@ directory_name() {
   echo "%{$fg_bold[cyan]%}%1/%\/%{$reset_color%}"
 }
 
-export PROMPT=$'\n$(rb_prompt)$(nodejs_prompt)in $(directory_name) $(git_dirty)$(need_push)\n› '
+export PROMPT=$'\n$(rb_prompt)in $(directory_name) $(git_dirty)$(need_push)$(hg_branch)\n› '
 set_prompt () {
   export RPROMPT="%{$fg_bold[cyan]%}%{$reset_color%}"
 }
