@@ -9,51 +9,26 @@ else
   git="/usr/bin/git"
 fi
 
-if (( $+commands[hg] ))
-then
-  hg="$commands[hg]"
-else
-  hg="/usr/bin/local/hg"
-fi
-
-hg_branch() {
-  branch=$($hg branch 2>/dev/null)
-  if [[ $branch == "" ]]
-  then
-    echo ""
-  else
-    st=$($hg status 2>/dev/null | tail -n 1)
-    if [[ "$st" == "" ]]
-    then
-      echo "on hg %{$fg_bold[green]%}$branch%{$reset_color%}"
-    else
-      echo "on hg %{$fg_bold[red]%}$branch%{$reset_color%}"
-    fi
-  fi
-}
-
 git_branch() {
   echo $($git symbolic-ref HEAD 2>/dev/null | awk -F/ {'print $NF'})
 }
 
 git_dirty() {
-  st=$($git status 2>/dev/null | tail -n 1)
-  if [[ $st == "" ]]
-  then
-    echo ""
-  else
-    if [[ "$st" =~ ^nothing ]]
+  if [ -d .git ] || git rev-parse --git-dir > /dev/null 2>&1; then
+    st=$($git status --porcelain=v1 2>/dev/null | tail -n 1)
+    if [[ "$st" == "" ]]
     then
       echo "on git %{$fg_bold[green]%}$(git_prompt_info)%{$reset_color%}"
     else
       echo "on git %{$fg_bold[red]%}$(git_prompt_info)%{$reset_color%}"
     fi
+  else
+    echo ""
   fi
 }
 
 git_prompt_info () {
  ref=$($git symbolic-ref HEAD 2>/dev/null) || return
-# echo "(%{\e[0;33m%}${ref#refs/heads/}%{\e[0m%})"
  echo "${ref#refs/heads/}"
 }
 
@@ -70,45 +45,11 @@ need_push () {
   fi
 }
 
-ruby_version() {
-  if (( $+commands[rbenv] ))
-  then
-    echo "$(rbenv version | awk '{print $1}')"
-  fi
-
-  if (( $+commands[rvm-prompt] ))
-  then
-    echo "$(rvm-prompt | awk '{print $1}')"
-  fi
-}
-
-rb_prompt() {
-  if ! [[ -z "$(ruby_version)" ]]
-  then
-    echo "r:%{$fg_bold[yellow]%}$(ruby_version)%{$reset_color%} "
-  else
-    echo ""
-  fi
-}
-
-nodejs_version() {
-	echo "$(nvm current | awk '{print $1}')"
-}
-
-nodejs_prompt() {
-  if ! [[ -z "$(nodejs_version)" ]]
-  then
-    echo "n:%{$fg_bold[yellow]%}$(nodejs_version)%{$reset_color%} "
-  else
-    echo ""
-  fi
-}
-
 directory_name() {
   echo "%{$fg_bold[cyan]%}%1/%\/%{$reset_color%}"
 }
 
-export PROMPT=$'\n$(rb_prompt)in $(directory_name) $(git_dirty)$(need_push)$(hg_branch)\n› '
+export PROMPT=$'\n%{$fg_bold[cyan]%}☢%{$reset_color%}  $(directory_name) $(git_dirty)$(need_push)\n› '
 set_prompt () {
   export RPROMPT="%{$fg_bold[cyan]%}%{$reset_color%}"
 }
