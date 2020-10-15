@@ -1,5 +1,11 @@
 #!/bin/sh
 
+if [ "$(uname -s)" != "Darwin" ]
+then
+  # Exit if not MacOS
+  exit 0
+fi
+
 if test ! $(which rbenv)
 then
   echo "  Installing rbenv for you."
