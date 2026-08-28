@@ -120,8 +120,45 @@ install_dotfiles () {
   done
 }
 
+install_xdg_configs () {
+  info 'installing XDG config dotfiles'
+
+  xdg_config_home="${XDG_CONFIG_HOME:-$HOME/.config}"
+  mkdir -p "$xdg_config_home"
+
+  for source in `find $DOTFILES_ROOT -maxdepth 2 -type d -name config`
+  do
+    topic=`basename \`dirname $source\``
+    dest="$xdg_config_home/$topic"
+
+    if [ -e "$dest" ] && [ ! -L "$dest" ]
+    then
+      user "File already exists: $dest, what do you want to do? [s]kip, [o]verwrite, [b]ackup?"
+      read -n 1 action
+      echo ''
+
+      case "$action" in
+        o )
+          rm -rf "$dest"
+          link_files "$source" "$dest";;
+        b )
+          mv "$dest" "$dest.backup"
+          link_files "$source" "$dest";;
+        * )
+          success "skipped $source";;
+      esac
+    elif [ -L "$dest" ]
+    then
+      success "already linked $dest"
+    else
+      link_files "$source" "$dest"
+    fi
+  done
+}
+
 setup_gitconfig
 install_dotfiles
+install_xdg_configs
 
 # If we're on a Mac, let's install and setup homebrew.
 if [ "$(uname -s)" == "Darwin" ]
